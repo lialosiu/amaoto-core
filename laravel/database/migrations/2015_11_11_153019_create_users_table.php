@@ -14,10 +14,13 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password', 60);
+            $table->string('username')->unique()->nullable()->default(null)->comment('用户名');
+            $table->string('email')->unique()->nullable()->default(null)->comment('Email');
+            $table->string('phone')->unique()->nullable()->default(null)->comment('电话');
+            $table->string('password', 60)->comment('密码');
+            $table->boolean('is_baned')->default(false)->comment('是否禁用');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
