@@ -150,6 +150,17 @@ return [
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
+
+        /*
+         * Intervention Image
+         */
+        Intervention\Image\ImageServiceProvider::class,
+
+        /*
+         * Cross-Origin Resource Sharing
+         */
+        Barryvdh\Cors\ServiceProvider::class,
+
     ],
 
     /*
@@ -199,7 +210,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
-        'Debugbar'  => Barryvdh\Debugbar\Facade::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 

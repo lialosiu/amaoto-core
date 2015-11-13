@@ -23,6 +23,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read UserInfo $userInfo
+ * @property-read \Illuminate\Database\Eloquent\Collection|Role[] $roles
  * @method static \Illuminate\Database\Query\Builder|\App\User whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUsername($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereEmail($value)
@@ -45,5 +46,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function userInfo()
     {
         return $this->hasOne(UserInfo::class, 'user_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_x_role', 'user_id', 'role_id');
     }
 }
