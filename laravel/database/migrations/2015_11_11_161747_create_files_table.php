@@ -19,6 +19,7 @@ class CreateFilesTable extends Migration
             $table->string('mime')->comment('MIME');
             $table->unsignedInteger('user_id')->comment('上传用户外键');
             $table->unsignedInteger('base_file_id')->comment('基础文件外键');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
