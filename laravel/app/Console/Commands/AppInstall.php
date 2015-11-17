@@ -59,22 +59,22 @@ class AppInstall extends Command
         $masterRole       = new App\Role();
         $masterRole->name = 'Master';
         $masterRole->save();
-        System::setMasterRoleId($masterRole);
+        System::setMasterRoleId($masterRole->id);
 
         $adminRole       = new App\Role();
         $adminRole->name = 'Administrator';
         $adminRole->save();
-        System::setAdministratorRoleId($adminRole);
+        System::setAdministratorRoleId($adminRole->id);
 
         $editorRole       = new App\Role();
         $editorRole->name = 'Editor';
         $editorRole->save();
-        System::setEditorRoleId($editorRole);
+        System::setEditorRoleId($editorRole->id);
 
         $defaultRole       = new App\Role();
         $defaultRole->name = 'User';
         $defaultRole->save();
-        System::setDefaultRoleId($defaultRole);
+        System::setDefaultRoleId($defaultRole->id);
 
         $user = UserManager::signUp($masterUsername, $masterEmail, null, $masterPassword);
         $user->save();
