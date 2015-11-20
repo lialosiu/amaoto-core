@@ -11,9 +11,8 @@ Route::group(['prefix' => 'api', 'middleware' => []], function () {
         Route::post('sign-in', 'Api\AuthController@doSignIn');
     });
 
-    Route::group(['prefix' => 'oa-user', 'middleware' => []], function () {
-        Route::post('create', 'Api\OaUserController@doCreateOaUser');
-        Route::post('edit', 'Api\OaUserController@doEditOaUser');
+    Route::group(['prefix' => 'user', 'middleware' => []], function () {
+        Route::get('paginate', 'Api\UserController@getUsersWithPaginate');
     });
 
     Route::group(['prefix' => 'department', 'middleware' => []], function () {
@@ -25,6 +24,7 @@ Route::group(['prefix' => 'api', 'middleware' => []], function () {
     });
 
     Route::group(['prefix' => 'file', 'middleware' => []], function () {
+        Route::get('paginate', 'Api\FileController@getFilesWithPaginate');
         Route::post('upload', 'Api\FileController@doUploadFile');
         Route::get('download/{id}', 'Api\FileController@getFileBinToDownloadById');
     });

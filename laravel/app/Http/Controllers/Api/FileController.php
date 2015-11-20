@@ -7,6 +7,7 @@ use App\Exceptions\SecurityException;
 use App\File as FileModel;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Services\FileManager;
+use App\Services\Tools;
 use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
@@ -61,5 +62,16 @@ class FileController extends BaseController
         $path = config('filesystems.disks.local.root') . '/' . $baseFile->path;
 
         return \Response::download($path, $file->name);
+    }
+
+    public function getFilesWithPaginate(Request $request)
+    {
+        $perPage = $request->get('num');
+        if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
+            $perPage = 15;
+
+        $files = FileModel::query()->paginate($perPage);
+
+        return $this->buildResponse(trans('api.file.paginate.success'), Tools::toArray($files));
     }
 }
