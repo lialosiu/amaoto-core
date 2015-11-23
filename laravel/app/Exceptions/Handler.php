@@ -43,6 +43,8 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         $view = parent::render($request, $e);
+        if (!$this->isHttpException($e))
+            header('Access-Control-Allow-Origin: *');
         if (!$request->ajax() && !$request->wantsJson())
             return $view;
 
