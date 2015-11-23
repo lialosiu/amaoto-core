@@ -2,10 +2,10 @@
 
 namespace App;
 
+use Eloquent;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 
@@ -35,7 +35,7 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  * @method static \Illuminate\Database\Query\Builder|\App\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedAt($value)
  */
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends Eloquent implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
     use SoftDeletes;

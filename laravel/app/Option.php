@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 
 /**
  * App\Option
@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Query\Builder|\App\Option whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Option whereUpdatedAt($value)
  */
-class Option extends Model
+class Option extends Eloquent
 {
     protected $table    = 'options';
     protected $fillable = ['key'];

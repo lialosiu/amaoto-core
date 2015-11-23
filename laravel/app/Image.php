@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Image whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Image whereUpdatedAt($value)
  */
-class Image extends Model
+class Image extends Eloquent
 {
     protected $table   = 'images';
     protected $appends = ['show_url', 'show_thumbnail_url', 'show_high_resolution_url'];

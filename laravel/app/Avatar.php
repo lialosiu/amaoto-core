@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereUpdatedAt($value)
  */
-class Avatar extends Model
+class Avatar extends Eloquent
 {
     protected $table = 'avatars';
 

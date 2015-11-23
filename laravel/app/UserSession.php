@@ -3,7 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -42,7 +42,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereUpdatedAt($value)
  */
-class UserSession extends Model
+class UserSession extends Eloquent
 {
     protected $table   = 'user_sessions';
     protected $appends = ['username'];

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereUpdatedAt($value)
  */
-class BasicFile extends Model
+class BasicFile extends Eloquent
 {
     protected $table = 'basic_files';
 

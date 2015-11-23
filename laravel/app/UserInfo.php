@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereUpdatedAt($value)
  */
-class UserInfo extends Model
+class UserInfo extends Eloquent
 {
     protected $table = 'user_infos';
 
