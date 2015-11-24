@@ -1,6 +1,7 @@
 <?php namespace App\Services;
 
 use App\BasicFile;
+use App\Exceptions\FileUploadException;
 use App\Exceptions\RequestValidationException;
 use App\File as FileModel;
 use App\Image as ImageModel;
@@ -106,7 +107,7 @@ class FileManager
         return $fileModel;
     }
 
-    public static function rebuildChunkFile($oriFilePath, $uniName, $chunk, $chunks)
+    public static function rebuildChunkFile($oriFilePath, $uniName, $totalSize)
     {
         $fs = Storage::disk();
 
@@ -115,16 +116,38 @@ class FileManager
 
         $fs->makeDirectory($toDirPath);
 
-        if ($chunk == 0)
-            $fs->put($toFilePath, File::get($oriFilePath));
-        else
+        if ($fs->exists($toFilePath))
             $fs->put($toFilePath, $fs->get($toFilePath) . File::get($oriFilePath));
+        else
+            $fs->put($toFilePath, File::get($oriFilePath));
 
         File::delete($oriFilePath);
 
-        if ($chunk != $chunks - 1)
+        $currentSize = $fs->size($toFilePath);
+
+        if ($currentSize > $totalSize) {
+            $fs->delete($toFilePath);
+            throw new FileUploadException(FileUploadException::RebuildChunkError);
+        }
+
+        if ($currentSize != $totalSize)
             return false;  //还有分块，请求继续发送
 
         return $toFilePath;
+    }
+
+    public static function getMergingFileSize($uniName)
+    {
+        $fs = Storage::disk();
+
+        $toDirPath  = 'merging';
+        $toFilePath = $toDirPath . '/' . $uniName;
+
+        $size = 0;
+
+        if ($fs->exists($toFilePath))
+            $size = $fs->size($toFilePath);
+
+        return $size;
     }
 }

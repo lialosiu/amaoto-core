@@ -21,19 +21,25 @@ class FileController extends BaseController
 
         $uploadedFile = $request->file('file');
 
-        if (!$request->hasFile('file')) {
+        if (!$uploadedFile) {
             throw new FileUploadException(FileUploadException::UploadFail);
         }
 
         if (!$uploadedFile->isValid()) {
-            throw new FileUploadException(FileUploadException::UploadFailWithError, ['error' => $uploadedFile->getErrorMessage()]);
+            throw new FileUploadException(FileUploadException::UploadFailWithError, [
+                'error' => $uploadedFile->getErrorMessage(),
+            ]);
         }
 
-        $chunk   = $request->has('chunk') ? $request->get('chunk') : 0;
-        $chunks  = $request->has('chunks') ? $request->get('chunks') : 1;
-        $uniName = $request->has('name') ? $guard->id() . '-' . $request->get('name') : $guard->id() . '-' . $uploadedFile->getClientSize() . '-' . time();
+//        $chunkSize   = $request->get('_chunkSize');
+//        $chunkNumber = $request->get('_chunkNumber');
+        $totalSize = $request->get('_totalSize');
 
-        $filePath = FileManager::rebuildChunkFile($uploadedFile->getRealPath(), $uniName, $chunk, $chunks);
+        $uniName = $request->has('uniName')
+            ? $guard->id() . '-' . md5($request->get('uniName'))
+            : $guard->id() . '-' . md5($uploadedFile->getClientOriginalName() . '-' . $uploadedFile->getClientMimeType());
+
+        $filePath = FileManager::rebuildChunkFile($uploadedFile->getRealPath(), $uniName, $totalSize);
         if ($filePath == false)
             return $this->buildResponse(trans('api.file.upload.continue'));
 
@@ -73,5 +79,17 @@ class FileController extends BaseController
         $files = FileModel::query()->paginate($perPage);
 
         return $this->buildResponse(trans('api.file.paginate.success'), Tools::toArray($files));
+    }
+
+    public function getUploadedFileSize(Guard $guard, Request $request)
+    {
+        if ($guard->guest())
+            throw new SecurityException(SecurityException::LoginFist);
+
+        $uniName = $guard->id() . '-' . md5($request->get('uniName'));
+
+        $size = FileManager::getMergingFileSize($uniName);
+
+        return response()->json($size);
     }
 }

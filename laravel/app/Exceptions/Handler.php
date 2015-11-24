@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -43,8 +44,6 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         $view = parent::render($request, $e);
-        if (!$this->isHttpException($e))
-            header('Access-Control-Allow-Origin: *');
         if (!$request->ajax() && !$request->wantsJson())
             return $view;
 
@@ -58,8 +57,12 @@ class Handler extends ExceptionHandler
             case \App\Exceptions\SignInException::class:
             case \App\Exceptions\FileUploadException::class:
             case \App\Exceptions\DataException::class:
+                $level = 'warning';
+                break;
             case \App\Exceptions\SecurityException::class:
                 $level = 'warning';
+                if ($e->getCode() == \App\Exceptions\SecurityException::LoginFist)
+                    $statusCode = 401;
                 break;
             case \App\Exceptions\RequestValidationException::class:
                 $level = 'warning';
@@ -96,5 +99,20 @@ class Handler extends ExceptionHandler
             'message'   => $message,
             'errors'    => $errors,
         ], $statusCode);
+    }
+
+    /**
+     * Map exception into an illuminate response.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Response $response
+     * @param  \Exception $e
+     * @return \Illuminate\Http\Response
+     */
+    protected function toIlluminateResponse($response, Exception $e)
+    {
+        $response = parent::toIlluminateResponse($response, $e);
+        if (!$response->headers->get('Access-Control-Allow-Origin'))
+            $response->headers->set('Access-Control-Allow-Origin', \Request::getHost());
+        return $response;
     }
 }

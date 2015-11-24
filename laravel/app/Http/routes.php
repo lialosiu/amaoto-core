@@ -1,37 +1,34 @@
 <?php
 
+Route::any('test', function () {
+    return response()->json(Input::all());
+});
+
 Route::group(['prefix' => 'api', 'middleware' => []], function () {
     Route::group(['prefix' => 'system', 'middleware' => []], function () {
-        Route::get('info', 'Api\SystemController@getInfo');
-        Route::post('save-setting', 'Api\SystemController@doSaveSetting');
+        Route::get('info', ['uses' => 'Api\SystemController@getInfo', 'middleware' => []]);
+        Route::post('save-setting', ['uses' => 'Api\SystemController@doSaveSetting', 'middleware' => ['auth']]);
     });
 
     Route::group(['prefix' => 'auth', 'middleware' => []], function () {
-        Route::post('sign-up', 'Api\AuthController@doSignUp');
-        Route::post('sign-in', 'Api\AuthController@doSignIn');
+        Route::post('sign-up', ['uses' => 'Api\AuthController@doSignUp', 'middleware' => []]);
+        Route::post('sign-in', ['uses' => 'Api\AuthController@doSignIn', 'middleware' => []]);
     });
 
     Route::group(['prefix' => 'user', 'middleware' => []], function () {
-        Route::get('paginate', 'Api\UserController@getUsersWithPaginate');
-    });
-
-    Route::group(['prefix' => 'department', 'middleware' => []], function () {
-        Route::post('create', 'Api\DepartmentController@doCreateDepartment');
-    });
-
-    Route::group(['prefix' => 'position', 'middleware' => []], function () {
-        Route::post('create', 'Api\PositionController@doCreatePosition');
+        Route::get('paginate', ['uses' => 'Api\UserController@getUsersWithPaginate', 'middleware' => ['auth']]);
     });
 
     Route::group(['prefix' => 'file', 'middleware' => []], function () {
-        Route::get('paginate', 'Api\FileController@getFilesWithPaginate');
-        Route::post('upload', 'Api\FileController@doUploadFile');
-        Route::get('download/{id}', 'Api\FileController@getFileBinToDownloadById');
+        Route::get('paginate', ['uses' => 'Api\FileController@getFilesWithPaginate', 'middleware' => ['auth']]);
+        Route::post('upload', ['uses' => 'Api\FileController@doUploadFile', 'middleware' => ['auth']]);
+        Route::get('uploaded-size', ['uses' => 'Api\FileController@getUploadedFileSize', 'middleware' => ['auth']]);
+        Route::get('download/{id}', ['uses' => 'Api\FileController@getFileBinToDownloadById', 'middleware' => ['auth']]);
     });
 
     Route::group(['prefix' => 'image', 'middleware' => []], function () {
-        Route::post('upload', 'Api\ImageController@doUploadImage');
-        Route::get('show/{id}/{size?}', 'Api\ImageController@getImageBinToShowById');
-        Route::get('{id}', 'Api\ImageController@getImageById');
+        Route::post('upload', ['uses' => 'Api\ImageController@doUploadImage', 'middleware' => ['auth']]);
+        Route::get('show/{id}/{size?}', ['uses' => 'Api\ImageController@getImageBinToShowById', 'middleware' => ['auth']]);
+        Route::get('{id}', ['uses' => 'Api\ImageController@getImageById', 'middleware' => ['auth']]);
     });
 });
