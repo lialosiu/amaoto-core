@@ -80,6 +80,9 @@ class AppInstall extends Command
         $user->save();
 
         $user->roles()->attach($masterRole);
+        $user->roles()->attach($adminRole);
+        $user->roles()->attach($editorRole);
+        $user->roles()->attach($defaultRole);
 
         Option::setValueByKey('installed', true);
 

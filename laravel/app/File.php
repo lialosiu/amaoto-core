@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $mime MIME
  * @property integer $user_id 上传用户外键
  * @property integer $base_file_id 基础文件外键
+ * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read BasicFile $baseFile
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\File whereMime($value)
  * @method static \Illuminate\Database\Query\Builder|\App\File whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\File whereBaseFileId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\File whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\File whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\File whereUpdatedAt($value)
  */

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Services\System;
 use Eloquent;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -24,6 +25,10 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  * @property \Carbon\Carbon $updated_at
  * @property-read UserInfo $userInfo
  * @property-read \Illuminate\Database\Eloquent\Collection|Role[] $roles
+ * @property-read mixed $is_master
+ * @property-read mixed $is_administrator
+ * @property-read mixed $is_editor
+ * @property-read mixed $is_default
  * @method static \Illuminate\Database\Query\Builder|\App\User whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUsername($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereEmail($value)
@@ -40,8 +45,9 @@ class User extends Eloquent implements AuthenticatableContract, AuthorizableCont
     use Authenticatable, Authorizable;
     use SoftDeletes;
 
-    protected $table  = 'users';
-    protected $hidden = ['password', 'remember_token'];
+    protected $table   = 'users';
+    protected $hidden  = ['password', 'remember_token'];
+    protected $appends = ['is_master', 'is_administrator', 'is_editor', 'is_default'];
 
     public function userInfo()
     {
@@ -51,5 +57,41 @@ class User extends Eloquent implements AuthenticatableContract, AuthorizableCont
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_x_role', 'user_id', 'role_id');
+    }
+
+    public function getIsMasterAttribute()
+    {
+        $masterRoleId = System::getMasterRole()->id;
+        foreach ($this->roles as $role)
+            if ($role->id == $masterRoleId)
+                return true;
+        return false;
+    }
+
+    public function getIsAdministratorAttribute()
+    {
+        $administratorRoleId = System::getAdministratorRole()->id;
+        foreach ($this->roles as $role)
+            if ($role->id == $administratorRoleId)
+                return true;
+        return false;
+    }
+
+    public function getIsEditorAttribute()
+    {
+        $editorRoleId = System::getEditorRole()->id;
+        foreach ($this->roles as $role)
+            if ($role->id == $editorRoleId)
+                return true;
+        return false;
+    }
+
+    public function getIsDefaultAttribute()
+    {
+        $defaultRoleId = System::getDefaultRole()->id;
+        foreach ($this->roles as $role)
+            if ($role->id == $defaultRoleId)
+                return true;
+        return false;
     }
 }

@@ -132,9 +132,6 @@ class AuthController extends BaseController
      */
     public function getCurrentUser(Guard $guard)
     {
-        if ($guard->guest())
-            throw new SecurityException(SecurityException::LoginFist);
-
         $user = $guard->user();
 
         return $this->buildResponse(trans('api.auth.get_current_user.success'), $user);

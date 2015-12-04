@@ -77,7 +77,8 @@ class System
     public static function getMasterRole()
     {
         $masterRoleId = Option::getValueByKey('master_role_id');
-        $masterRole   = Role::whereId($masterRoleId)->first();
+        /** @var Role $masterRole */
+        $masterRole = Role::whereId($masterRoleId)->first();
         if (!$masterRole)
             throw new SystemException(SystemException::MasterRoleNotDefined);
 
