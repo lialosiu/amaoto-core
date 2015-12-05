@@ -12,7 +12,7 @@ Route::group(['prefix' => 'api', 'middleware' => []], function () {
 
     Route::group(['prefix' => 'auth', 'middleware' => []], function () {
         Route::post('sign-up', ['uses' => 'Api\AuthController@doSignUp', 'middleware' => []]);
-        Route::any('sign-in', ['uses' => 'Api\AuthController@doSignIn', 'middleware' => []]);
+        Route::post('sign-in', ['uses' => 'Api\AuthController@doSignIn', 'middleware' => []]);
         Route::get('current-user', ['uses' => 'Api\AuthController@getCurrentUser', 'middleware' => []]);
     });
 

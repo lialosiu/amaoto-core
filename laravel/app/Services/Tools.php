@@ -53,4 +53,19 @@ class Tools
         return '';
     }
 
+    public static function getTrace($msg="",$level=3){
+        $traces=debug_backtrace();
+        $count=0;
+        foreach($traces as $trace)
+        {
+            if(isset($trace['file'],$trace['line']))
+            {
+                $msg.="\nin ".$trace['file'].' ('.$trace['line'].')';
+                if(++$count>=$level)
+                    break;
+            }
+        }
+        return $msg;
+    }
+
 }

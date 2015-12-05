@@ -21,16 +21,7 @@ class Controller extends BaseController
             }
         }
 
-        if ($this->request->ajax() || $this->request->wantsJson() || $this->request->isMethod('GET')) {
-            return response()->json([
-                'level'    => $level,
-                'message'  => $message,
-                'redirect' => $redirect,
-                'data'     => $data,
-            ]);
-        }
-
-        return view('redirect', [
+        return response()->json([
             'level'    => $level,
             'message'  => $message,
             'redirect' => $redirect,
