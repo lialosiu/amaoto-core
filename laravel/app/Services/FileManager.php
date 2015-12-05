@@ -48,11 +48,15 @@ class FileManager
         $thumbnail          = Image::make($fileContent)->widen(100)->encode($fileModel->mime);
         $thumbnailFileModel = FileManager::saveFileByFileContent($thumbnail->encoded, $fileModel->name . '-thumbnail.' . $fileModel->ext, $thumbnail->mime(), $user);
 
+        $highResolution          = Image::make($fileContent)->widen(1000)->encode($fileModel->mime);
+        $highResolutionFileModel = FileManager::saveFileByFileContent($highResolution->encoded, $fileModel->name . '-high-resolution.' . $fileModel->ext, $highResolution->mime(), $user);
+
         $imageModel         = new ImageModel();
         $imageModel->width  = $image->getWidth();
         $imageModel->height = $image->getHeight();
         $imageModel->file()->associate($fileModel);
         $imageModel->thumbnailFile()->associate($thumbnailFileModel);
+        $imageModel->highResolutionFile()->associate($highResolutionFileModel);
         $imageModel->save();
 
         return $imageModel;

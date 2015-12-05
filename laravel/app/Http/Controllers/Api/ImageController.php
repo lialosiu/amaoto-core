@@ -8,6 +8,7 @@ use App\File as FileModel;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Image as ImageModel;
 use App\Services\FileManager;
+use App\Services\Tools;
 use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
@@ -21,21 +22,27 @@ class ImageController extends BaseController
 
         $uploadedFile = $request->file('file');
 
-        if (!$request->hasFile('file')) {
+        if (!$uploadedFile) {
             throw new FileUploadException(FileUploadException::UploadFail);
         }
 
         if (!$uploadedFile->isValid()) {
-            throw new FileUploadException(FileUploadException::UploadFailWithError, ['error' => $uploadedFile->getErrorMessage()]);
+            throw new FileUploadException(FileUploadException::UploadFailWithError, [
+                'error' => $uploadedFile->getErrorMessage(),
+            ]);
         }
 
-        $chunk   = $request->has('chunk') ? $request->get('chunk') : 0;
-        $chunks  = $request->has('chunks') ? $request->get('chunks') : 1;
-        $uniName = $request->has('name') ? $guard->id() . '-' . $request->get('name') : $guard->id() . '-' . $uploadedFile->getClientSize() . '-' . time();
+//        $chunkSize   = $request->get('_chunkSize');
+//        $chunkNumber = $request->get('_chunkNumber');
+        $totalSize = $request->get('_totalSize');
 
-        $filePath = FileManager::rebuildChunkFile($uploadedFile->getRealPath(), $uniName, $chunk, $chunks);
+        $uniName = $request->has('uniName')
+            ? $guard->id() . '-' . md5($request->get('uniName'))
+            : $guard->id() . '-' . md5($uploadedFile->getClientOriginalName() . '-' . $uploadedFile->getClientMimeType());
+
+        $filePath = FileManager::rebuildChunkFile($uploadedFile->getRealPath(), $uniName, $totalSize);
         if ($filePath == false)
-            return $this->buildResponse(trans('api.file.upload.continue'));
+            return $this->buildResponse(trans('api.image.upload.continue'));
 
         $fileName = $request->get('filename');
         if (!$fileName)
@@ -44,9 +51,8 @@ class ImageController extends BaseController
         /** @var User $user */
         $user = $guard->user();
 
-        $image = FileManager::UploadImage($filePath, $fileName, $user);
-
-        return $this->buildResponse(trans('api.image.upload.success'), $image);
+        $file = FileManager::UploadImage($filePath, $fileName, $user);
+        return $this->buildResponse(trans('api.image.upload.success'), $file);
     }
 
     public function getImageBinToShowById($id, $size = null)
@@ -67,6 +73,14 @@ class ImageController extends BaseController
             case 'thumbnail':
                 if ($image->thumbnailFile)
                     $file = $image->thumbnailFile;
+                else
+                    $file = $image->file;
+                break;
+            case 'high-resolution':
+                if ($image->highResolutionFile)
+                    $file = $image->highResolutionFile;
+                else
+                    $file = $image->file;
                 break;
             default:
                 // todo 按请求的分辨率缩放
@@ -98,4 +112,26 @@ class ImageController extends BaseController
         return $this->buildResponse(trans('api.image.get.success'), $image);
     }
 
+    public function getImagesWithPaginate(Request $request)
+    {
+        $perPage = $request->get('num');
+        if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
+            $perPage = 15;
+
+        $files = ImageModel::query()->paginate($perPage);
+
+        return $this->buildResponse(trans('api.image.paginate.success'), Tools::toArray($files));
+    }
+
+    public function getUploadedFileSize(Guard $guard, Request $request)
+    {
+        if ($guard->guest())
+            throw new SecurityException(SecurityException::LoginFist);
+
+        $uniName = $guard->id() . '-' . md5($request->get('uniName'));
+
+        $size = FileManager::getMergingFileSize($uniName);
+
+        return response()->json($size);
+    }
 }

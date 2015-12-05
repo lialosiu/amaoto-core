@@ -28,8 +28,10 @@ Route::group(['prefix' => 'api', 'middleware' => []], function () {
     });
 
     Route::group(['prefix' => 'image', 'middleware' => []], function () {
+        Route::get('paginate', ['uses' => 'Api\ImageController@getImagesWithPaginate', 'middleware' => ['auth.admin']]);
         Route::post('upload', ['uses' => 'Api\ImageController@doUploadImage', 'middleware' => ['auth.admin']]);
         Route::get('show/{id}/{size?}', ['uses' => 'Api\ImageController@getImageBinToShowById', 'middleware' => ['auth.admin']]);
+        Route::get('uploaded-size', ['uses' => 'Api\ImageController@getUploadedFileSize', 'middleware' => ['auth.admin']]);
         Route::get('{id}', ['uses' => 'Api\ImageController@getImageById', 'middleware' => ['auth.admin']]);
     });
 });
