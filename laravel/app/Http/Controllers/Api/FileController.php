@@ -68,16 +68,10 @@ class FileController extends BaseController
     {
         /** @var FileModel $file */
         $file = FileModel::whereId($id)->first();
-        if (!$file || !$baseFile = $file->baseFile)
+        if (!$file || !$file->baseFile)
             throw new NotFoundException(NotFoundException::FileNotFound);
 
-        // todo 处理非本地储存的文件
-        if ($baseFile->disk != \Storage::getDefaultDriver())
-            throw new NotSupportedException(NotSupportedException::FeatureOnTheWay);
-
-        $path = config('filesystems.disks.local.root') . '/' . $baseFile->path;
-
-        return \Response::download($path, $file->name, [], 'inline');
+        return \Response::download($file->baseFile->getLocalCachePath(), [], 'inline');
     }
 
     public function getFileById($id = 0)

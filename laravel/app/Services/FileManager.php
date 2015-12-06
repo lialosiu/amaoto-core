@@ -51,8 +51,13 @@ class FileManager
         $thumbnail          = Image::make($fileContent)->widen(100)->encode($fileModel->mime);
         $thumbnailFileModel = FileManager::saveFileByFileContent($thumbnail->encoded, $fileModel->name . '-thumbnail.' . $fileModel->ext, $thumbnail->mime(), $user);
 
-        $highResolution          = Image::make($fileContent)->widen(1000)->encode($fileModel->mime);
-        $highResolutionFileModel = FileManager::saveFileByFileContent($highResolution->encoded, $fileModel->name . '-high-resolution.' . $fileModel->ext, $highResolution->mime(), $user);
+        if ($image->getWidth() > 1000) {
+            $highResolution          = Image::make($fileContent)->widen(1000)->encode($fileModel->mime);
+            $highResolutionFileModel = FileManager::saveFileByFileContent($highResolution->encoded, $fileModel->name . '-high-resolution.' . $fileModel->ext, $highResolution->mime(), $user);
+        } else {
+            $highResolution          = Image::make($fileContent)->widen($image->getWidth())->encode($fileModel->mime);
+            $highResolutionFileModel = FileManager::saveFileByFileContent($highResolution->encoded, $fileModel->name . '-high-resolution.' . $fileModel->ext, $highResolution->mime(), $user);
+        }
 
         $imageModel         = new ImageModel();
         $imageModel->width  = $image->getWidth();
@@ -72,7 +77,7 @@ class FileManager
         $fileContent = $fs->get($oriFilePath);
         $mimeType    = $fs->mimeType($oriFilePath);
 
-        if (!str_is('audio/*', $mimeType)) {
+        if (!str_is('audio/*', $mimeType) && !str_is('video/*', $mimeType)) {
             $fs->delete($oriFilePath);
             throw new RequestValidationException(RequestValidationException::FileIsNotMusic);
         }
@@ -83,24 +88,7 @@ class FileManager
 
         $getId3Result = self::analyzeFileByGetId3($fileModel);
 
-        $getId3Result['comments']['picture']['0']['data'];
-
-        if ($getId3Result
-            && isset($getId3Result['comments'])
-            && isset($getId3Result['comments']['picture'])
-            && isset($getId3Result['comments']['picture']['0'])
-            && isset($getId3Result['comments']['picture']['0']['data'])
-        ) {
-            $coverData     = $getId3Result['comments']['picture']['0']['data'];
-            $coverTempFile = FileManager::saveTempFileByFileContent($coverData, $user);
-//            $coverFileGetId3Result = self::analyzeFileByGetId3($coverTempFile);
-            $coverFileName = sprintf('%s-cover-file', $fileName);
-
-            $coverImage = self::UploadImage($coverTempFile->baseFile->getLocalCachePath(), $coverFileName, $user);
-
-            $fs->delete($coverTempFile);
-        }
-
+        // 标签数据
         if ($getId3Result && isset($getId3Result['tags'])) {
             $types = ['quicktime', 'ape', 'id3v2', 'id3v1'];
             foreach ($types as $type) {
@@ -121,6 +109,22 @@ class FileManager
 
                 break;
             }
+        }
+
+
+        // 封面图
+        if ($getId3Result
+            && isset($getId3Result['comments'])
+            && isset($getId3Result['comments']['picture'])
+            && isset($getId3Result['comments']['picture']['0'])
+            && isset($getId3Result['comments']['picture']['0']['data'])
+        ) {
+            $coverData     = $getId3Result['comments']['picture']['0']['data'];
+            $coverTempFile = FileManager::saveTempFileByFileContent($coverData, $user);
+//            $coverFileGetId3Result = self::analyzeFileByGetId3($coverTempFile);
+            $coverFileName = sprintf('%s-cover-file', (isset($tag_title) && $tag_title) ? $tag_title : $fileName);
+
+            $coverImage = self::UploadImage($coverTempFile->baseFile->path, $coverFileName, $user);
         }
 
 
@@ -234,16 +238,12 @@ class FileManager
         if (!$fs->exists($toFilePath))
             $fs->put($toFilePath, $fileContent);
 
-        $basicFile = BasicFile::whereMd5($md5)->whereSha1($sha1)->whereSize($size)->first();
-
-        if (!$basicFile) {
-            $basicFile       = new BasicFile();
-            $basicFile->md5  = $md5;
-            $basicFile->sha1 = $sha1;
-            $basicFile->size = $size;
-            $basicFile->disk = $diskName;
-            $basicFile->path = $toFilePath;
-        }
+        $basicFile       = new BasicFile();
+        $basicFile->md5  = $md5;
+        $basicFile->sha1 = $sha1;
+        $basicFile->size = $size;
+        $basicFile->disk = $diskName;
+        $basicFile->path = $toFilePath;
 
         $fileModel       = new FileModel();
         $fileModel->name = $name;
