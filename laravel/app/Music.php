@@ -40,6 +40,9 @@ use Eloquent;
  */
 class Music extends Eloquent
 {
+    protected $table   = 'musics';
+    protected $appends = ['show_url', 'show_thumbnail_cover_url', 'bitrate_4_display'];
+
     public function file()
     {
         return $this->belongsTo(File::class, 'file_id');
@@ -48,5 +51,22 @@ class Music extends Eloquent
     public function coverImage()
     {
         return $this->belongsTo(Image::class, 'cover_image_id');
+    }
+
+    public function getShowUrlAttribute()
+    {
+        return action('Api\MusicController@getMusicBinToShowById', ['id' => $this->id]);
+    }
+
+    public function getShowThumbnailCoverUrlAttribute()
+    {
+        if (!$this->coverImage)
+            return '';
+        return $this->coverImage->show_thumbnail_url;
+    }
+
+    public function getBitrate4DisplayAttribute()
+    {
+        return sprintf('%dkbps', round($this->bitrate / 1000));
     }
 }
