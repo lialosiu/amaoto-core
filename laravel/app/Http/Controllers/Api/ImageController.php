@@ -51,8 +51,18 @@ class ImageController extends BaseController
         /** @var User $user */
         $user = $guard->user();
 
-        $file = FileManager::UploadImage($filePath, $fileName, $user);
-        return $this->buildResponse(trans('api.image.upload.success'), $file);
+        $image = FileManager::UploadImage($filePath, $fileName, $user);
+        return $this->buildResponse(trans('api.image.upload.success'), $image);
+    }
+
+    public function getImageBinToDownloadById($id)
+    {
+        /** @var ImageModel $image */
+        $image = ImageModel::whereId($id)->first();
+        if (!$image || !$image->file || !$image->file->baseFile)
+            throw new NotFoundException(NotFoundException::ImageNotFound);
+
+        return \Response::download($image->file->baseFile->getLocalCachePath(), $image->file->name);
     }
 
     public function getImageBinToShowById($id, $size = null)
@@ -92,13 +102,7 @@ class ImageController extends BaseController
         if (!$file || !$baseFile = $file->baseFile)
             return \Response::download('images/image_not_found.png', 'image_not_found.png', [], 'inline');
 
-        // todo 处理非本地储存的文件
-        if ($baseFile->disk != \Storage::getDefaultDriver())
-            throw new NotSupportedException(NotSupportedException::FeatureOnTheWay);
-
-        $path = config('filesystems.disks.local.root') . '/' . $baseFile->path;
-
-        return \Response::download($path, $file->name, [], 'inline');
+        return \Response::download($baseFile->getLocalCachePath(), $file->name, [], 'inline');
     }
 
     public function getImageById($id = 0)
@@ -118,9 +122,9 @@ class ImageController extends BaseController
         if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
             $perPage = 15;
 
-        $files = ImageModel::query()->paginate($perPage);
+        $images = ImageModel::query()->paginate($perPage);
 
-        return $this->buildResponse(trans('api.image.paginate.success'), Tools::toArray($files));
+        return $this->buildResponse(trans('api.image.paginate.success'), Tools::toArray($images));
     }
 
     public function getUploadedFileSize(Guard $guard, Request $request)

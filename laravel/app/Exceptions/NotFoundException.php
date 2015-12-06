@@ -19,7 +19,7 @@ class NotFoundException extends Exception
     const PostCommentNotFound  = 0x0b;
     const TweetCommentNotFound = 0x0c;
     const DepartmentNotFound   = 0x0d;
-    const OaUserNotFound       = 0x0e;
+    const MusicNotFound        = 0x0e;
 
     public function __construct($code, array $data = [], Exception $previous = null)
     {
@@ -66,8 +66,8 @@ class NotFoundException extends Exception
             case self::DepartmentNotFound:
                 $message = trans('exception.not_found.department', []);
                 break;
-            case self::OaUserNotFound:
-                $message = trans('exception.not_found.oa_user_not_found', []);
+            case self::MusicNotFound:
+                $message = trans('exception.not_found.music_not_found', []);
                 break;
             default:
                 $message = trans('str.unknown_exception');

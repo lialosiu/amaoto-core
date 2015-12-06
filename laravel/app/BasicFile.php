@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Exceptions\NotSupportedException;
 use Eloquent;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -32,4 +33,17 @@ class BasicFile extends Eloquent
     protected $table = 'basic_files';
 
     use SoftDeletes;
+
+    public function getLocalCachePath()
+    {
+        switch ($this->disk) {
+            case \Storage::getDefaultDriver():
+                $path = config('filesystems.disks.local.root') . '/' . $this->path;
+                break;
+            default:
+                throw new NotSupportedException(NotSupportedException::FeatureOnTheWay);
+                break;
+        }
+        return $path;
+    }
 }

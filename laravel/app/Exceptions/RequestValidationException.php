@@ -6,6 +6,7 @@ class RequestValidationException extends Exception
 {
     const ValidationFail = 0x01;
     const FileIsNotImage = 0x02;
+    const FileIsNotMusic = 0x03;
 
     private $errors;
 
@@ -18,6 +19,9 @@ class RequestValidationException extends Exception
                 break;
             case self::FileIsNotImage:
                 $message = trans('exception.request_validation.file_is_not_image', []);
+                break;
+            case self::FileIsNotMusic:
+                $message = trans('exception.request_validation.file_is_not_music', []);
                 break;
             default:
                 $message = trans('str.unknown_exception');

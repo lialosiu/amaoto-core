@@ -2,19 +2,18 @@
 
 use App\Exceptions\FileUploadException;
 use App\Exceptions\NotFoundException;
-use App\Exceptions\NotSupportedException;
 use App\Exceptions\SecurityException;
-use App\File as FileModel;
 use App\Http\Controllers\Api\Controller as BaseController;
+use App\Music as MusicModel;
 use App\Services\FileManager;
 use App\Services\Tools;
 use App\User;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
 
-class FileController extends BaseController
+class MusicController extends BaseController
 {
-    public function doUploadFile(Guard $guard, Request $request)
+    public function doUploadMusic(Guard $guard, Request $request)
     {
         if ($guard->guest())
             throw new SecurityException(SecurityException::LoginFist);
@@ -41,7 +40,7 @@ class FileController extends BaseController
 
         $filePath = FileManager::rebuildChunkFile($uploadedFile->getRealPath(), $uniName, $totalSize);
         if ($filePath == false)
-            return $this->buildResponse(trans('api.file.upload.continue'));
+            return $this->buildResponse(trans('api.music.upload.continue'));
 
         $fileName = $request->get('filename');
         if (!$fileName)
@@ -50,56 +49,51 @@ class FileController extends BaseController
         /** @var User $user */
         $user = $guard->user();
 
-        $file = FileManager::UploadFile($filePath, $fileName, $user);
-        return $this->buildResponse(trans('api.file.upload.success'), $file);
+        $music = FileManager::UploadMusic($filePath, $fileName, $user);
+        return $this->buildResponse(trans('api.music.upload.success'), $music);
     }
 
-    public function getFileBinToDownloadById($id)
+    public function getMusicBinToDownloadById($id)
     {
-        /** @var FileModel $file */
-        $file = FileModel::whereId($id)->first();
-        if (!$file || !$file->baseFile)
-            throw new NotFoundException(NotFoundException::FileNotFound);
+        /** @var MusicModel $music */
+        $music = MusicModel::whereId($id)->first();
+        if (!$music || !$music->file || !$music->file->baseFile)
+            throw new NotFoundException(NotFoundException::MusicNotFound);
 
-        return \Response::download($file->baseFile->getLocalCachePath(), $file->name);
+        return \Response::download($music->file->baseFile->getLocalCachePath(), $music->file->name);
     }
 
-    public function getFileBinToShowById($id)
+    public function getMusicBinToShowById($id)
     {
-        /** @var FileModel $file */
-        $file = FileModel::whereId($id)->first();
-        if (!$file || !$baseFile = $file->baseFile)
-            throw new NotFoundException(NotFoundException::FileNotFound);
+        /** @var MusicModel $music */
+        $music = MusicModel::whereId($id)->first();
 
-        // todo 处理非本地储存的文件
-        if ($baseFile->disk != \Storage::getDefaultDriver())
-            throw new NotSupportedException(NotSupportedException::FeatureOnTheWay);
+        if (!$music || !$music->file || !$music->file->baseFile)
+            throw new NotFoundException(NotFoundException::MusicNotFound);
 
-        $path = config('filesystems.disks.local.root') . '/' . $baseFile->path;
-
-        return \Response::download($path, $file->name, [], 'inline');
+        return \Response::download($music->file->baseFile->getLocalCachePath(), $music->file->name, [], 'inline');
     }
 
-    public function getFileById($id = 0)
+    public function getMusicById($id = 0)
     {
-        /** @var FileModel $file */
-        $file = FileModel::whereId($id)->first();
+        /** @var MusicModel $music */
+        $music = MusicModel::whereId($id)->first();
 
-        if (!$file)
-            throw new NotFoundException(NotFoundException::FileNotFound);
+        if (!$music)
+            throw new NotFoundException(NotFoundException::MusicNotFound);
 
-        return $this->buildResponse(trans('api.file.get.success'), $file);
+        return $this->buildResponse(trans('api.music.get.success'), $music);
     }
 
-    public function getFilesWithPaginate(Request $request)
+    public function getMusicsWithPaginate(Request $request)
     {
         $perPage = $request->get('num');
         if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
             $perPage = 15;
 
-        $files = FileModel::query()->paginate($perPage);
+        $musics = MusicModel::query()->paginate($perPage);
 
-        return $this->buildResponse(trans('api.file.paginate.success'), Tools::toArray($files));
+        return $this->buildResponse(trans('api.music.paginate.success'), Tools::toArray($musics));
     }
 
     public function getUploadedFileSize(Guard $guard, Request $request)
