@@ -12,7 +12,7 @@
         "barryvdh/laravel-debugbar": "^2.0",
         "intervention/image": "^2.3",
         "barryvdh/laravel-cors": "^0.7.2",
-        "james-heinrich/getid3": "^1.9"
+        "james-heinrich/getid3": "v1.9.10"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

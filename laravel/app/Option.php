@@ -12,11 +12,6 @@ use Eloquent;
  * @property string $value
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\Option whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Option whereKey($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Option whereValue($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Option whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Option whereUpdatedAt($value)
  */
 class Option extends Eloquent
 {

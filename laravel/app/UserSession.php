@@ -24,23 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read User $user
+ * @property-read \App\User $user
  * @property-read mixed $username
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereSessionId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereUserId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLoginTime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLoginIp($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLoginUa($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLastActiveTime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLastActiveIp($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLastActiveUa($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereLastActiveFullUrl($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereIsLocked($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereIsExpired($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserSession whereUpdatedAt($value)
  */
 class UserSession extends Eloquent
 {

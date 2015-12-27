@@ -19,7 +19,8 @@ class NotFoundException extends Exception
     const PostCommentNotFound  = 0x0b;
     const TweetCommentNotFound = 0x0c;
     const DepartmentNotFound   = 0x0d;
-    const MusicNotFound        = 0x0e;
+    const MUSIC_NOT_FOUND      = 0x0e;
+    const ALBUM_NOT_FOUND      = 0x0f;
 
     public function __construct($code, array $data = [], Exception $previous = null)
     {
@@ -66,8 +67,11 @@ class NotFoundException extends Exception
             case self::DepartmentNotFound:
                 $message = trans('exception.not_found.department', []);
                 break;
-            case self::MusicNotFound:
+            case self::MUSIC_NOT_FOUND:
                 $message = trans('exception.not_found.music_not_found', []);
+                break;
+            case self::ALBUM_NOT_FOUND:
+                $message = trans('exception.not_found.album_not_found', []);
                 break;
             default:
                 $message = trans('str.unknown_exception');

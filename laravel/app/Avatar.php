@@ -13,12 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read Image $image
- * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereImageId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Avatar whereUpdatedAt($value)
+ * @property-read \App\Image $image
  */
 class Avatar extends Eloquent
 {

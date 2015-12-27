@@ -149,7 +149,7 @@ return [
          * Helper
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
+//        Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
          * Intervention Image

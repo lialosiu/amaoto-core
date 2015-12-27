@@ -5,38 +5,38 @@ namespace App;
 use Eloquent;
 
 /**
- * App\Music
+ * App\Album
  *
  * @property integer $id
  * @property string $title 歌名
  * @property string $artist 艺术家
  * @property string $year 年份
- * @property integer $track 音轨
  * @property string $genre 流派
- * @property float $playtime 播放时长
- * @property float $bitrate 码流
- * @property string $album_title 专辑标题
- * @property string $album_artist 专辑艺术家
- * @property string $tags 标签数据
- * @property integer $file_id 文件外键
  * @property integer $cover_image_id 封面图片外键
+ * @property integer $user_id 创建用户外键
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read \App\File $file
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Music[] $musics
+ * @property-read \App\User $user
  * @property-read \App\Image $coverImage
  * @property-read mixed $show_url
  * @property-read mixed $show_thumbnail_cover_url
- * @property-read mixed $bitrate4_display
+ * @property-read mixed $music_count
  */
-class Music extends Eloquent
+class Album extends Eloquent
 {
-    protected $table   = 'musics';
-    protected $appends = ['show_url', 'show_thumbnail_cover_url', 'bitrate_4_display'];
+    protected $table = 'albums';
+    protected $appends = ['show_url', 'show_thumbnail_cover_url', 'music_count'];
 
-    public function file()
+    public function musics()
     {
-        return $this->belongsTo(File::class, 'file_id');
+        return $this->belongsToMany(Music::class, 'album_x_music', 'album_id', 'music_id');
+    }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function coverImage()
@@ -56,8 +56,8 @@ class Music extends Eloquent
         return $this->coverImage->show_thumbnail_url;
     }
 
-    public function getBitrate4DisplayAttribute()
+    public function getMusicCountAttribute()
     {
-        return sprintf('%dkbps', round($this->bitrate / 1000));
+        return $this->musics->count();
     }
 }

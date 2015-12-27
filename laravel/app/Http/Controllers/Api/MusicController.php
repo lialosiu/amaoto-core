@@ -91,7 +91,7 @@ class MusicController extends BaseController
         if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
             $perPage = 15;
 
-        $musics = MusicModel::query()->paginate($perPage);
+        $musics = MusicModel::orderBy('id', 'desc')->paginate($perPage);
 
         return $this->buildResponse(trans('api.music.paginate.success'), Tools::toArray($musics));
     }

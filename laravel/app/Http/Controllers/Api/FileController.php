@@ -50,14 +50,14 @@ class FileController extends BaseController
         /** @var User $user */
         $user = $guard->user();
 
-        $file = FileManager::UploadFile($filePath, $fileName, $user);
+        $file = FileManager::UploadFileByTypeCheck($filePath, $fileName, $user);
         return $this->buildResponse(trans('api.file.upload.success'), $file);
     }
 
     public function getFileBinToDownloadById($id)
     {
         /** @var FileModel $file */
-        $file = FileModel::whereId($id)->first();
+        $file = FileModel::where('id', $id)->first();
         if (!$file || !$file->baseFile)
             throw new NotFoundException(NotFoundException::FileNotFound);
 
@@ -67,7 +67,7 @@ class FileController extends BaseController
     public function getFileBinToShowById($id)
     {
         /** @var FileModel $file */
-        $file = FileModel::whereId($id)->first();
+        $file = FileModel::where('id', $id)->first();
         if (!$file || !$file->baseFile)
             throw new NotFoundException(NotFoundException::FileNotFound);
 
@@ -77,7 +77,7 @@ class FileController extends BaseController
     public function getFileById($id = 0)
     {
         /** @var FileModel $file */
-        $file = FileModel::whereId($id)->first();
+        $file = FileModel::where('id', $id)->first();
 
         if (!$file)
             throw new NotFoundException(NotFoundException::FileNotFound);

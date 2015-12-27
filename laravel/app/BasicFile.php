@@ -18,15 +18,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereMd5($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereSha1($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereSize($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereDisk($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile wherePath($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\BasicFile whereUpdatedAt($value)
  */
 class BasicFile extends Eloquent
 {

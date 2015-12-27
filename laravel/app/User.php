@@ -23,22 +23,12 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read UserInfo $userInfo
- * @property-read \Illuminate\Database\Eloquent\Collection|Role[] $roles
+ * @property-read \App\UserInfo $userInfo
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Role[] $roles
  * @property-read mixed $is_master
  * @property-read mixed $is_administrator
  * @property-read mixed $is_editor
  * @property-read mixed $is_default
- * @method static \Illuminate\Database\Query\Builder|\App\User whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereUsername($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User wherePhone($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User wherePassword($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereIsBaned($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedAt($value)
  */
 class User extends Eloquent implements AuthenticatableContract, AuthorizableContract
 {

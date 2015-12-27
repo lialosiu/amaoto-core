@@ -17,17 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read BasicFile $baseFile
- * @property-read User $user
- * @method static \Illuminate\Database\Query\Builder|\App\File whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereExt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereMime($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereUserId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereBaseFileId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\File whereUpdatedAt($value)
+ * @property-read \App\BasicFile $baseFile
+ * @property-read \App\User $user
  */
 class File extends Eloquent
 {

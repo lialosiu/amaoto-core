@@ -17,21 +17,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read File $file
- * @property-read File $thumbnailFile
- * @property-read File $highResolutionFile
+ * @property-read \App\File $file
+ * @property-read \App\File $thumbnailFile
+ * @property-read \App\File $highResolutionFile
  * @property-read mixed $show_url
  * @property-read mixed $show_thumbnail_url
  * @property-read mixed $show_high_resolution_url
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereWidth($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereHeight($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereFileId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereThumbnailFileId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereHighResolutionFileId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\Image whereUpdatedAt($value)
  */
 class Image extends Eloquent
 {

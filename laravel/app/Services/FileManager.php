@@ -16,6 +16,20 @@ use Storage;
 
 class FileManager
 {
+    public static function UploadFileByTypeCheck($oriFilePath, $fileName, User $user, $diskName = null)
+    {
+        $fs       = Storage::disk($diskName);
+        $mimeType = $fs->mimeType($oriFilePath);
+
+        if (str_is('image/*', $mimeType)) {
+            return self::UploadImage($oriFilePath, $fileName, $user, $diskName);
+        } else if (str_is('audio/*', $mimeType) || str_is('video/*', $mimeType)) {
+            return self::UploadMusic($oriFilePath, $fileName, $user, $diskName);
+        }
+
+        return self::UploadFile($oriFilePath, $fileName, $user, $diskName);
+    }
+
     public static function UploadFile($oriFilePath, $fileName, User $user, $diskName = null)
     {
         $fs = Storage::disk($diskName);
@@ -98,10 +112,10 @@ class FileManager
 
                 $tag_title  = implode(';', isset($tag['title']) ? $tag['title'] : []);
                 $tag_artist = implode(';', isset($tag['artist']) ? $tag['artist'] : []);
-//                $tag_album        = implode(';', isset($tag['album']) ? $tag['album'] : []);
-                $tag_year  = implode(';', isset($tag['creation_date']) ? $tag['creation_date'] : (isset($tag['year']) ? $tag['year'] : []));
-                $tag_track = implode(';', isset($tag['track_number']) ? $tag['track_number'] : (isset($tag['track']) ? $tag['track'] : []));
-                $tag_genre = implode(';', isset($tag['genre']) ? $tag['genre'] : []);
+                $tag_album  = implode(';', isset($tag['album']) ? $tag['album'] : []);
+                $tag_year   = implode(';', isset($tag['creation_date']) ? $tag['creation_date'] : (isset($tag['year']) ? $tag['year'] : []));
+                $tag_track  = implode(';', isset($tag['track_number']) ? $tag['track_number'] : (isset($tag['track']) ? $tag['track'] : []));
+                $tag_genre  = implode(';', isset($tag['genre']) ? $tag['genre'] : []);
 //                $tag_comment      = implode(';', isset($tag['comment']) ? $tag['comment'] : []);
                 $tag_album_artist = implode(';', isset($tag['album_artist']) ? $tag['album_artist'] : []);
                 $tag_composer     = implode(';', isset($tag['composer']) ? $tag['composer'] : []);
@@ -152,7 +166,10 @@ class FileManager
         $music->genre    = (isset($tag_genre) && $tag_genre) ? $tag_genre : null;
         $music->playtime = isset($getId3Result['playtime_seconds']) ? $getId3Result['playtime_seconds'] : null;
         $music->bitrate  = isset($getId3Result['bitrate']) ? $getId3Result['bitrate'] : null;
-        $music->tags     = ($getId3Result && isset($getId3Result['tags'])) ? json_encode($getId3Result['tags']) : null;
+
+        $music->album_title  = (isset($tag_album) && $tag_album) ? $tag_album : null;
+        $music->album_artist = (isset($tag_album_artist) && $tag_album_artist) ? $tag_album_artist : null;
+        $music->tags         = ($getId3Result && isset($getId3Result['tags'])) ? json_encode($getId3Result['tags']) : null;
 
         $music->file()->associate($fileModel);
 
@@ -189,7 +206,7 @@ class FileManager
         if (!$fs->exists($toFilePath))
             $fs->put($toFilePath, $fileContent);
 
-        $basicFile = BasicFile::whereMd5($md5)->whereSha1($sha1)->whereSize($size)->first();
+        $basicFile = BasicFile::where('md5', $md5)->where('sha1', $sha1)->where('size', $size)->first();
 
         if (!$basicFile) {
             $basicFile       = new BasicFile();
@@ -225,7 +242,7 @@ class FileManager
 
         $diskName = $diskName ? $diskName : Storage::getDefaultDriver();
 
-        $name = $md5 . '-' . $sha1;
+        $name = $md5 . '-' . $sha1 . '-' . str_random();
         $ext  = '.tmp';
 
         $now = Carbon::now();

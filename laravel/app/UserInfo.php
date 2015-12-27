@@ -19,18 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $deleted_at
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property-read User $user
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereNickName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereSex($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereBirthday($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereQq($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereProfile($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereUserId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereAvatarId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\UserInfo whereUpdatedAt($value)
+ * @property-read \App\User $user
  */
 class UserInfo extends Eloquent
 {

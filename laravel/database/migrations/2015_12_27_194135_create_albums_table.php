@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMusicsTable extends Migration
+class CreateAlbumsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,20 +12,14 @@ class CreateMusicsTable extends Migration
      */
     public function up()
     {
-        Schema::create('musics', function (Blueprint $table) {
+        Schema::create('albums', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title')->nullable()->index()->comment('歌名');
             $table->string('artist')->nullable()->index()->comment('艺术家');
             $table->string('year')->nullable()->index()->comment('年份');
-            $table->integer('track')->nullable()->comment('音轨');
             $table->string('genre')->nullable()->index()->comment('流派');
-            $table->double('playtime')->nullable()->comment('播放时长');
-            $table->double('bitrate')->nullable()->comment('码流');
-            $table->string('album_title')->nullable()->comment('专辑标题');
-            $table->string('album_artist')->nullable()->comment('专辑艺术家');
-            $table->text('tags')->nullable()->comment('标签数据');
-            $table->unsignedInteger('file_id')->comment('文件外键');
             $table->unsignedInteger('cover_image_id')->nullable()->comment('封面图片外键');
+            $table->unsignedInteger('user_id')->nullable()->comment('创建用户外键');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -38,6 +32,6 @@ class CreateMusicsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('musics');
+        Schema::drop('albums');
     }
 }
