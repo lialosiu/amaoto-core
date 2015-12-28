@@ -112,7 +112,7 @@ class Handler extends ExceptionHandler
     {
         $response = parent::toIlluminateResponse($response, $e);
         if (!$response->headers->get('Access-Control-Allow-Origin'))
-            $response->headers->set('Access-Control-Allow-Origin', \Request::getHost());
+            $response->headers->set('Access-Control-Allow-Origin', \Request::header('Origin'));
         return $response;
     }
 }
