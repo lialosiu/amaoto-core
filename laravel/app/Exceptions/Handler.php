@@ -47,6 +47,7 @@ class Handler extends ExceptionHandler
         if (!$request->ajax() && !$request->wantsJson())
             return $view;
 
+
         $level      = 'error';
         $statusCode = $view->getStatusCode();
         $errors     = [];
@@ -90,7 +91,7 @@ class Handler extends ExceptionHandler
                 'message'   => $message,
                 'errors'    => $errors,
                 'trace'     => $e->getTraceAsString(),
-            ], $statusCode);
+            ], $statusCode, $view->headers->all());
 
         return new JsonResponse([
             'exception' => class_basename($e),
@@ -98,7 +99,7 @@ class Handler extends ExceptionHandler
             'level'     => $level,
             'message'   => $message,
             'errors'    => $errors,
-        ], $statusCode);
+        ], $statusCode, $view->headers->all());
     }
 
     /**
@@ -113,6 +114,8 @@ class Handler extends ExceptionHandler
         $response = parent::toIlluminateResponse($response, $e);
         if (!$response->headers->get('Access-Control-Allow-Origin'))
             $response->headers->set('Access-Control-Allow-Origin', \Request::header('Origin'));
+        if (!$response->headers->get('Access-Control-Allow-Credentials'))
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
         return $response;
     }
 }
