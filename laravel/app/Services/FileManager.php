@@ -205,7 +205,8 @@ class FileManager
         try {
             $fs->makeDirectory($toDirPath);
         } catch (\Exception $e) {
-
+            if (!$fs->exists($toDirPath))
+                throw $e;
         }
 
         if (!$fs->exists($toFilePath))
@@ -255,7 +256,12 @@ class FileManager
         $toDirPath  = $rootDir . '/' . $now->year . '/' . $now->month . '/' . $now->day;
         $toFilePath = $toDirPath . '/' . $md5 . '-' . $sha1 . '-' . str_random();
 
-        $fs->makeDirectory($toDirPath);
+        try {
+            $fs->makeDirectory($toDirPath);
+        } catch (\Exception $e) {
+            if (!$fs->exists($toDirPath))
+                throw $e;
+        }
 
         if (!$fs->exists($toFilePath))
             $fs->put($toFilePath, $fileContent);
@@ -284,7 +290,12 @@ class FileManager
         $toDirPath  = 'merging';
         $toFilePath = $toDirPath . '/' . $uniName;
 
-        $fs->makeDirectory($toDirPath);
+        try {
+            $fs->makeDirectory($toDirPath);
+        } catch (\Exception $e) {
+            if (!$fs->exists($toDirPath))
+                throw $e;
+        }
 
         if ($fs->exists($toFilePath))
             $fs->put($toFilePath, $fs->get($toFilePath) . File::get($oriFilePath));
