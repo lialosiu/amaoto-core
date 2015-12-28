@@ -11,6 +11,7 @@ use App\User;
 use Carbon\Carbon;
 use File;
 use getID3;
+use Illuminate\Support\Facades\Log;
 use Image;
 use Storage;
 
@@ -201,7 +202,11 @@ class FileManager
         $toDirPath  = $rootDir . '/' . $now->year . '/' . $now->month . '/' . $now->day;
         $toFilePath = $toDirPath . '/' . $md5 . '-' . $sha1;
 
-        $fs->makeDirectory($toDirPath);
+        try {
+            $fs->makeDirectory($toDirPath);
+        } catch (\Exception $e) {
+
+        }
 
         if (!$fs->exists($toFilePath))
             $fs->put($toFilePath, $fileContent);
@@ -242,13 +247,13 @@ class FileManager
 
         $diskName = $diskName ? $diskName : Storage::getDefaultDriver();
 
-        $name = $md5 . '-' . $sha1 . '-' . str_random();
+        $name = $md5 . '-' . $sha1;
         $ext  = '.tmp';
 
         $now = Carbon::now();
 
         $toDirPath  = $rootDir . '/' . $now->year . '/' . $now->month . '/' . $now->day;
-        $toFilePath = $toDirPath . '/' . $md5 . '-' . $sha1;
+        $toFilePath = $toDirPath . '/' . $md5 . '-' . $sha1 . '-' . str_random();
 
         $fs->makeDirectory($toDirPath);
 
@@ -291,6 +296,9 @@ class FileManager
         $currentSize = $fs->size($toFilePath);
 
         if ($currentSize > $totalSize) {
+            // 续传出错
+            \Log::error($currentSize);
+            \Log::error($totalSize);
             $fs->delete($toFilePath);
             throw new FileUploadException(FileUploadException::RebuildChunkError);
         }
@@ -303,6 +311,8 @@ class FileManager
 
     public static function getMergingFileSize($uniName)
     {
+        // todo 貌似出错时获取的文件长度用来不能续传
+
         $fs = Storage::disk();
 
         $toDirPath  = 'merging';

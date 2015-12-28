@@ -1,19 +1,7 @@
 <?php
 
 Route::any('test', function () {
-    /** @var \App\File $file */
-    $file = \App\File::find(22);
-    $t    = \App\Services\FileManager::analyzeFileByGetId3($file, 'UTF-8');
-
-    $d = $t['comments']['picture']['0']['data'];
-
-    $tempFile = \App\Services\FileManager::saveTempFileByFileContent($d, Auth::user());
-
-    $tempFileInfo = \App\Services\FileManager::analyzeFileByGetId3($tempFile);
-
-    dd($tempFileInfo);
-
-    return response()->json(Input::all());
+    phpinfo();
 });
 
 Route::group(['prefix' => 'api', 'middleware' => []], function () {
