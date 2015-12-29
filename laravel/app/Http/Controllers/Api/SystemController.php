@@ -1,14 +1,7 @@
 <?php namespace App\Http\Controllers\Api;
 
-use App\Exceptions\DataException;
-use App\Exceptions\NotFoundException;
 use App\Http\Controllers\Api\Controller as BaseController;
-use App\Http\Requests\OaUserCreateRequest;
-use App\OaUser;
 use App\Services\System;
-use App\Services\Tools;
-use App\Services\UserManager;
-use App\User;
 use Illuminate\Http\Request;
 
 class SystemController extends BaseController

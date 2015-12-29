@@ -1,10 +1,32 @@
 <?php
 
+/*
+|--------------------------------------------------------------------------
+| Routes File
+|--------------------------------------------------------------------------
+|
+| Here is where you will register all of the routes in an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the controller to call when that URI is requested.
+|
+*/
+
 Route::any('test', function () {
     phpinfo();
 });
 
-Route::group(['prefix' => 'api', 'middleware' => []], function () {
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| This route group applies the "web" middleware group to every route
+| it contains. The "web" middleware group is defined in your HTTP
+| kernel and includes session state, CSRF protection, and more.
+|
+*/
+
+Route::group(['prefix' => 'api', 'middleware' => ['api']], function () {
     Route::group(['prefix' => 'system', 'middleware' => []], function () {
         Route::get('info', ['uses' => 'Api\SystemController@getInfo', 'middleware' => []]);
         Route::post('save-setting', ['uses' => 'Api\SystemController@doSaveSetting', 'middleware' => ['auth.admin']]);

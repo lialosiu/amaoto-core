@@ -8,7 +8,7 @@ use App\Music as MusicModel;
 use App\Services\FileManager;
 use App\Services\Tools;
 use App\User;
-use Illuminate\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 class MusicController extends BaseController

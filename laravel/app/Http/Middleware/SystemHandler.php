@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use App\Exceptions\SystemException;
 use App\Services\System;
 use Closure;
-use Illuminate\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use View;
 

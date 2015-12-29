@@ -3,11 +3,13 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\JsonResponse;
-use Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Foundation\Validation\ValidationException;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Whoops\Handler\PrettyPageHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -17,8 +19,10 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
+        ValidationException::class,
     ];
 
     /**
@@ -39,13 +43,23 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Exception $e
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function render($request, Exception $e)
     {
         $view = parent::render($request, $e);
-        if (!$request->ajax() && !$request->wantsJson())
+
+        if (!$request->ajax() && !$request->wantsJson()) {
+            if ($this->isHttpException($e)) {
+                return $view;
+            }
+
+            if (config('app.debug')) {
+                return $this->renderExceptionWithWhoops($view, $e);
+            }
+
             return $view;
+        }
 
 
         $level      = 'error';
@@ -84,7 +98,7 @@ class Handler extends ExceptionHandler
         }
 
         if (config('app.debug'))
-            return new JsonResponse([
+            return response()->json([
                 'exception' => class_basename($e),
                 'code'      => $e->getCode(),
                 'level'     => $level,
@@ -93,7 +107,7 @@ class Handler extends ExceptionHandler
                 'trace'     => $e->getTraceAsString(),
             ], $statusCode, $view->headers->all());
 
-        return new JsonResponse([
+        return response()->json([
             'exception' => class_basename($e),
             'code'      => $e->getCode(),
             'level'     => $level,
@@ -107,7 +121,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Symfony\Component\HttpFoundation\Response $response
      * @param  \Exception $e
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     protected function toIlluminateResponse($response, Exception $e)
     {
@@ -117,5 +131,24 @@ class Handler extends ExceptionHandler
         if (!$response->headers->get('Access-Control-Allow-Credentials'))
             $response->headers->set('Access-Control-Allow-Credentials', 'true');
         return $response;
+    }
+
+    /**
+     * Render an exception using Whoops.
+     *
+     * @param Response $view
+     * @param Exception $e
+     * @return Response
+     */
+    protected function renderExceptionWithWhoops(Response $view, Exception $e)
+    {
+        $whoops = new \Whoops\Run;
+        $whoops->pushHandler(new PrettyPageHandler());
+
+        return new Response(
+            $whoops->handleException($e),
+            $view->getStatusCode(),
+            $view->headers
+        );
     }
 }

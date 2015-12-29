@@ -6,11 +6,13 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.1.*",
+        "laravel/framework": "5.2.*",
         "barryvdh/laravel-ide-helper": "^2.1",
         "doctrine/dbal": "^2.5",
+        "filp/whoops": "^1.1",
         "intervention/image": "^2.3",
-        "barryvdh/laravel-cors": "^0.7.2",
+        "asm89/stack-cors": "dev-master as 0.2.2",
+        "barryvdh/laravel-cors": "^0.7.3",
         "james-heinrich/getid3": "v1.9.10"
     },
     "require-dev": {

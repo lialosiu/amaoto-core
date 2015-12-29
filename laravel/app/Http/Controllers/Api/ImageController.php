@@ -2,7 +2,6 @@
 
 use App\Exceptions\FileUploadException;
 use App\Exceptions\NotFoundException;
-use App\Exceptions\NotSupportedException;
 use App\Exceptions\SecurityException;
 use App\File as FileModel;
 use App\Http\Controllers\Api\Controller as BaseController;
@@ -10,7 +9,7 @@ use App\Image as ImageModel;
 use App\Services\FileManager;
 use App\Services\Tools;
 use App\User;
-use Illuminate\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 class ImageController extends BaseController
@@ -100,9 +99,9 @@ class ImageController extends BaseController
         }
 
         if (!$file || !$baseFile = $file->baseFile)
-            return \Response::download('images/image_not_found.png', 'image_not_found.png', [], 'inline');
+            return response()->download('images/image_not_found.png', 'image_not_found.png', [], 'inline');
 
-        return \Response::download($baseFile->getLocalCachePath(), $file->name, [], 'inline');
+        return response()->download($baseFile->getLocalCachePath(), $file->name, [], 'inline');
     }
 
     public function getImageById($id = 0)

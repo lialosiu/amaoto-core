@@ -11,7 +11,7 @@ use App\Services\UserManager;
 use App\User;
 use App\UserInfo;
 use App\UserSession;
-use Illuminate\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 class AuthController extends BaseController

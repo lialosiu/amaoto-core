@@ -5,7 +5,7 @@ use App\Exceptions\NotFoundException;
 use App\Exceptions\SecurityException;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Services\Tools;
-use Illuminate\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 class AlbumController extends BaseController

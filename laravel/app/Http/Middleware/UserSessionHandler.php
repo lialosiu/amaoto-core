@@ -6,7 +6,7 @@ use App\Exceptions\SecurityException;
 use App\UserSession;
 use Carbon\Carbon;
 use Closure;
-use Illuminate\Auth\Guard;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 use Session;
 
