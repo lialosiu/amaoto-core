@@ -66,6 +66,7 @@ Route::group(['prefix' => 'api', 'middleware' => ['api']], function () {
         Route::get('uploaded-size', ['uses' => 'Api\MusicController@getUploadedFileSize', 'middleware' => ['auth.admin']]);
         Route::get('show/{id}/{size?}', ['uses' => 'Api\MusicController@getMusicBinToShowById', 'middleware' => []]);
         Route::get('download/{id}', ['uses' => 'Api\MusicController@getMusicBinToDownloadById', 'middleware' => []]);
+        Route::post('edit/{id}', ['uses' => 'Api\MusicController@doEditMusicById', 'middleware' => ['auth.admin']]);
         Route::get('{id}', ['uses' => 'Api\MusicController@getMusicById', 'middleware' => []]);
     });
 

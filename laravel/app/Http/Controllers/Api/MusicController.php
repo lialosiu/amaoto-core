@@ -53,12 +53,36 @@ class MusicController extends BaseController
         return $this->buildResponse(trans('api.music.upload.success'), $music);
     }
 
+    public function doEditMusicById($id, Request $request)
+    {
+        /** @var MusicModel $music */
+        $music = MusicModel::where('id', $id)->first();
+        if (!$music)
+            throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
+
+        if ($request->has('title'))
+            $music->title = $request->get('title');
+        if ($request->has('artist'))
+            $music->artist = $request->get('artist');
+        if ($request->has('year'))
+            $music->year = $request->get('year');
+        if ($request->has('genre'))
+            $music->genre = $request->get('genre');
+        if ($request->has('cover_image_id'))
+            $music->coverImage()->associate($request->get('cover_image_id'));
+
+        $music->save();
+
+        return $this->buildResponse(trans('api.music.edit.success'), $music);
+    }
+
+
     public function getMusicBinToDownloadById($id)
     {
         /** @var MusicModel $music */
-        $music = MusicModel::whereId($id)->first();
+        $music = MusicModel::where('id', $id)->first();
         if (!$music || !$music->file || !$music->file->baseFile)
-            throw new NotFoundException(NotFoundException::MusicNotFound);
+            throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
 
         return \Response::download($music->file->baseFile->getLocalCachePath(), $music->file->name);
     }
@@ -66,10 +90,10 @@ class MusicController extends BaseController
     public function getMusicBinToShowById($id)
     {
         /** @var MusicModel $music */
-        $music = MusicModel::whereId($id)->first();
+        $music = MusicModel::where('id', $id)->first();
 
         if (!$music || !$music->file || !$music->file->baseFile)
-            throw new NotFoundException(NotFoundException::MusicNotFound);
+            throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
 
         return \Response::download($music->file->baseFile->getLocalCachePath(), $music->file->name, [], 'inline');
     }
@@ -77,10 +101,10 @@ class MusicController extends BaseController
     public function getMusicById($id = 0)
     {
         /** @var MusicModel $music */
-        $music = MusicModel::whereId($id)->first();
+        $music = MusicModel::where('id', $id)->first();
 
         if (!$music)
-            throw new NotFoundException(NotFoundException::MusicNotFound);
+            throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
 
         return $this->buildResponse(trans('api.music.get.success'), $music);
     }
