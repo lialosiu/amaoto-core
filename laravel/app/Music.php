@@ -25,6 +25,7 @@ use Eloquent;
  * @property \Carbon\Carbon $updated_at
  * @property-read \App\File $file
  * @property-read \App\Image $coverImage
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Album[] $albums
  * @property-read mixed $show_url
  * @property-read mixed $show_thumbnail_cover_url
  * @property-read mixed $bitrate4_display
@@ -42,6 +43,11 @@ class Music extends Eloquent
     public function coverImage()
     {
         return $this->belongsTo(Image::class, 'cover_image_id');
+    }
+
+    public function albums()
+    {
+        return $this->belongsToMany(Album::class, 'album_x_music', 'music_id', 'album_id');
     }
 
     public function getShowUrlAttribute()
