@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\SecurityException;
+use App\Exceptions\AppException;
 use App\User;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
@@ -33,12 +33,13 @@ class MasterAccess
      * @param  \Illuminate\Http\Request $request
      * @param  \Closure $next
      * @return mixed
+     * @throws AppException
      */
     public function handle($request, Closure $next)
     {
         if ($this->auth->guest()) {
             if ($request->ajax() || $request->wantsJson()) {
-                throw new SecurityException(SecurityException::LoginFist);
+                throw new AppException(AppException::NEED_SIGN_IN);
             } else {
                 return redirect()->guest('auth/login');
             }
@@ -47,7 +48,7 @@ class MasterAccess
         /** @var User $user */
         $user = $this->auth->user();
         if (!$user->is_master)
-            throw new SecurityException(SecurityException::NoPermission);
+            throw new AppException(AppException::NO_PERMISSION);
 
         return $next($request);
     }

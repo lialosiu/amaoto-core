@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers\Api;
 
+use App\Exceptions\AppException;
 use App\Exceptions\FileUploadException;
 use App\Exceptions\NotFoundException;
-use App\Exceptions\SecurityException;
 use App\File as FileModel;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Image as ImageModel;
@@ -17,7 +17,7 @@ class ImageController extends BaseController
     public function doUploadImage(Guard $guard, Request $request)
     {
         if ($guard->guest())
-            throw new SecurityException(SecurityException::LoginFist);
+            throw new AppException(AppException::NEED_SIGN_IN);
 
         $uploadedFile = $request->file('file');
 
@@ -129,7 +129,7 @@ class ImageController extends BaseController
     public function getUploadedFileSize(Guard $guard, Request $request)
     {
         if ($guard->guest())
-            throw new SecurityException(SecurityException::LoginFist);
+            throw new AppException(AppException::NEED_SIGN_IN);
 
         $uniName = $guard->id() . '-' . md5($request->get('uniName'));
 

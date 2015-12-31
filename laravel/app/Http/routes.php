@@ -74,5 +74,6 @@ Route::group(['prefix' => 'api', 'middleware' => ['api']], function () {
     Route::group(['prefix' => 'album', 'middleware' => []], function () {
         Route::get('paginate', ['uses' => 'Api\AlbumController@getAlbumsWithPaginate', 'middleware' => []]);
         Route::post('create', ['uses' => 'Api\AlbumController@doCreateAlbum', 'middleware' => ['auth.admin']]);
+        Route::post('edit/{id}', ['uses' => 'Api\AlbumController@doEditAlbum', 'middleware' => ['auth.admin']]);
     });
 });

@@ -1,18 +1,15 @@
 <?php namespace App\Http\Controllers\Api;
 
 use App\Exceptions\NotSupportedException;
-use App\Exceptions\SecurityException;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Http\Requests\SignInRequest;
 use App\Http\Requests\SignUpRequest;
 use App\Services\System;
 use App\Services\Tools;
 use App\Services\UserManager;
-use App\User;
 use App\UserInfo;
-use App\UserSession;
+use Auth;
 use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Http\Request;
 
 class AuthController extends BaseController
 {
@@ -54,7 +51,7 @@ class AuthController extends BaseController
      * 用户登录
      *
      * @param SignInRequest $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return \Illuminate\Http\JsonResponse
      * @throws \App\Exceptions\SignInException
      */
     public function doSignIn(SignInRequest $request)
@@ -87,48 +84,18 @@ class AuthController extends BaseController
     /**
      * 用户登出
      *
-     * @param Guard $guard
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function doSignOut(Guard $guard)
+    public function doSignOut()
     {
-        $guard->logout();
+        Auth::logout();
         return $this->buildResponse(trans('api.auth.sign_out.success'));
     }
 
     /**
-     * 解锁
-     *
-     * @param Request $request
-     * @param Guard $guard
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     * @throws SecurityException
-     */
-    public function doUnlockUserSession(Request $request, Guard $guard)
-    {
-        $userSession = UserSession::getCurrentUserSession();
-        if (!$userSession || $userSession->is_expired)
-            throw new SecurityException(SecurityException::SessionExpired);
-
-        if ($guard->check()) {
-            /** @var User $user */
-            $user = $guard->user();
-            if (!\Hash::check($request->get('password'), $user->password))
-                throw new SecurityException(SecurityException::PasswordNotMatch);
-        }
-
-        $userSession->is_locked = false;
-        $userSession->save();
-
-        return $this->buildResponse(trans('api.auth.unlock.success'));
-    }
-
-    /**
      * 获取当前用户信息
-     *
      * @param Guard $guard
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
-     * @throws SecurityException
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getCurrentUser(Guard $guard)
     {

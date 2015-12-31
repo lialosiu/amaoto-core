@@ -1,8 +1,7 @@
 <?php namespace App\Http\Controllers\Api;
 
 use App\Album;
-use App\Exceptions\NotFoundException;
-use App\Exceptions\SecurityException;
+use App\Exceptions\AppException;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Services\Tools;
 use Illuminate\Contracts\Auth\Guard;
@@ -13,7 +12,7 @@ class AlbumController extends BaseController
     public function doCreateAlbum(Guard $guard, Request $request)
     {
         if ($guard->guest())
-            throw new SecurityException(SecurityException::LoginFist);
+            throw new AppException(AppException::NEED_SIGN_IN);
 
         $musics       = $request->get('musics');
         $coverImageId = $request->get('cover_image_id');
@@ -39,13 +38,44 @@ class AlbumController extends BaseController
         return $this->buildResponse(trans('api.album.create.success'), Tools::toArray($album));
     }
 
+    public function doEditAlbum(Request $request, $id)
+    {
+        /** @var Album $album */
+        $album = Album::where('id', $id)->first();
+        if (!$album)
+            throw new AppException(AppException::ALBUM_NOT_FOUND);
+
+        if ($request->has('title'))
+            $album->title = $request->get('title');
+        if ($request->has('artist'))
+            $album->artist = $request->get('artist');
+        if ($request->has('year'))
+            $album->year = $request->get('year');
+        if ($request->has('genre'))
+            $album->genre = $request->get('genre');
+        if ($request->has('cover_image_id'))
+            $album->coverImage()->associate($request->get('cover_image_id'));
+
+        $album->save();
+
+        if ($request->has('musics')) {
+            $album->musics()->detach();
+            $musics = $request->get('musics');
+            foreach ($musics as $musicId) {
+                $album->musics()->attach($musicId);
+            }
+        }
+
+        return $this->buildResponse(trans('api.album.edit.success'), Tools::toArray($album));
+    }
+
     public function getAlbumById($id = 0)
     {
         /** @var Album $album */
         $album = Album::where('id', $id)->first();
 
         if (!$album)
-            throw new NotFoundException(NotFoundException::ALBUM_NOT_FOUND);
+            throw new AppException(AppException::ALBUM_NOT_FOUND);
 
         return $this->buildResponse(trans('api.album.get.success'), Tools::toArray($album));
     }

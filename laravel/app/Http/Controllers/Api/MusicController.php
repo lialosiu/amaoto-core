@@ -1,8 +1,8 @@
 <?php namespace App\Http\Controllers\Api;
 
+use App\Exceptions\AppException;
 use App\Exceptions\FileUploadException;
 use App\Exceptions\NotFoundException;
-use App\Exceptions\SecurityException;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Music as MusicModel;
 use App\Services\FileManager;
@@ -16,7 +16,7 @@ class MusicController extends BaseController
     public function doUploadMusic(Guard $guard, Request $request)
     {
         if ($guard->guest())
-            throw new SecurityException(SecurityException::LoginFist);
+            throw new AppException(AppException::NEED_SIGN_IN);
 
         $uploadedFile = $request->file('file');
 
@@ -134,7 +134,7 @@ class MusicController extends BaseController
     public function getUploadedFileSize(Guard $guard, Request $request)
     {
         if ($guard->guest())
-            throw new SecurityException(SecurityException::LoginFist);
+            throw new AppException(AppException::NEED_SIGN_IN);
 
         $uniName = $guard->id() . '-' . md5($request->get('uniName'));
 
