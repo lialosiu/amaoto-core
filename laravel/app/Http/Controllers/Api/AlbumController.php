@@ -5,6 +5,7 @@ use App\Exceptions\AppException;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Services\Tools;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 
 class AlbumController extends BaseController
@@ -86,7 +87,9 @@ class AlbumController extends BaseController
         if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
             $perPage = 15;
 
-        $albums = Album::orderBy('id', 'desc')->paginate($perPage);
+        $albums = Album::with(['musics' => function ($query) {
+            $query->orderBy('track', 'asc');
+        }])->orderBy('id', 'desc')->paginate($perPage);
 
         return $this->buildResponse(trans('api.album.paginate.success'), Tools::toArray($albums));
     }

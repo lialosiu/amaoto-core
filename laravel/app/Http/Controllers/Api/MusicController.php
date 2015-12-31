@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Api;
 
+use App\Album;
 use App\Exceptions\AppException;
 use App\Exceptions\FileUploadException;
 use App\Exceptions\NotFoundException;
@@ -50,6 +51,15 @@ class MusicController extends BaseController
         $user = $guard->user();
 
         $music = FileManager::UploadMusic($filePath, $fileName, $user);
+
+        if ($request->has('albumId')) {
+            $id = $request->get('albumId');
+            /** @var Album $album */
+            $album = Album::where('id', $id)->first();
+            if (!$album)
+                throw new AppException(AppException::ALBUM_NOT_FOUND);
+            $album->musics()->attach($music);
+        }
         return $this->buildResponse(trans('api.music.upload.success'), $music);
     }
 
