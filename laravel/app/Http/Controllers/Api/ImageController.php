@@ -57,7 +57,7 @@ class ImageController extends BaseController
     public function getImageBinToDownloadById($id)
     {
         /** @var ImageModel $image */
-        $image = ImageModel::whereId($id)->first();
+        $image = ImageModel::where('id', $id)->first();
         if (!$image || !$image->file || !$image->file->baseFile)
             throw new NotFoundException(NotFoundException::ImageNotFound);
 
@@ -67,7 +67,7 @@ class ImageController extends BaseController
     public function getImageBinToShowById($id, $size = null)
     {
         /** @var ImageModel $image */
-        $image = ImageModel::whereId($id)->first();
+        $image = ImageModel::where('id', $id)->first();
         /** @var FileModel $file */
         $file = null;
         if (!$image)
@@ -107,7 +107,7 @@ class ImageController extends BaseController
     public function getImageById($id = 0)
     {
         /** @var ImageModel $image */
-        $image = ImageModel::whereId($id)->first();
+        $image = ImageModel::where('id', $id)->first();
 
         if (!$image)
             throw new NotFoundException(NotFoundException::ImageNotFound);
@@ -121,7 +121,7 @@ class ImageController extends BaseController
         if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
             $perPage = 15;
 
-        $images = ImageModel::query()->paginate($perPage);
+        $images = ImageModel::orderBy('id', 'desc')->paginate($perPage);
 
         return $this->buildResponse(trans('api.image.paginate.success'), Tools::toArray($images));
     }

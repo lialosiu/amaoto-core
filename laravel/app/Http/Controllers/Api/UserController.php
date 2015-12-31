@@ -13,7 +13,7 @@ class UserController extends BaseController
         if (!is_numeric($perPage) || $perPage < 1 || $perPage > 30)
             $perPage = 15;
 
-        $users = User::query()->paginate($perPage);
+        $users = User::orderBy('id', 'desc')->paginate($perPage);
 
         return $this->buildResponse(trans('api.user.paginate.success'), Tools::toArray($users));
     }

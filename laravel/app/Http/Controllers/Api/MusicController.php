@@ -76,6 +76,17 @@ class MusicController extends BaseController
         return $this->buildResponse(trans('api.music.edit.success'), $music);
     }
 
+    public function doDeleteMusicById($id)
+    {
+        /** @var MusicModel $music */
+        $music = MusicModel::where('id', $id)->first();
+        if (!$music)
+            throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
+
+        $music->delete();
+
+        return $this->buildResponse(trans('api.music.delete.success'), $music);
+    }
 
     public function getMusicBinToDownloadById($id)
     {

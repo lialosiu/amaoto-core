@@ -66,4 +66,13 @@ class Music extends Eloquent
     {
         return sprintf('%dkbps', round($this->bitrate / 1000));
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function (Music $music) {
+            $music->albums()->detach();
+        });
+    }
 }
