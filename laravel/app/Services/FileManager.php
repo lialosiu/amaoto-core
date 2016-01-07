@@ -63,7 +63,7 @@ class FileManager
 
         $image = Image::make($fileContent);
 
-        $thumbnail          = Image::make($fileContent)->widen(100)->encode($fileModel->mime);
+        $thumbnail          = Image::make($fileContent)->widen(300)->encode($fileModel->mime);
         $thumbnailFileModel = FileManager::saveFileByFileContent($thumbnail->encoded, $fileModel->name . '-thumbnail.' . $fileModel->ext, $thumbnail->mime(), $user);
 
         if ($image->getWidth() > 1000) {
