@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 
 class Kernel extends HttpKernel
 {
@@ -38,7 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Barryvdh\Cors\HandleCors::class,
-            'throttle:60,1',
+//            'throttle:1000,1',
         ],
     ];
 
@@ -55,6 +56,6 @@ class Kernel extends HttpKernel
         'auth.admin'  => \App\Http\Middleware\AdministratorAccess::class,
         'auth.master' => \App\Http\Middleware\MasterAccess::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \App\Http\Middleware\ThrottleRequests::class,
+        'throttle' => ThrottleRequests::class,
     ];
 }

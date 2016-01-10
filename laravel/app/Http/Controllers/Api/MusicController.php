@@ -11,6 +11,7 @@ use App\Services\Tools;
 use App\User;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class MusicController extends BaseController
 {
@@ -105,7 +106,7 @@ class MusicController extends BaseController
         if (!$music || !$music->file || !$music->file->baseFile)
             throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
 
-        return \Response::download($music->file->baseFile->getLocalCachePath(), $music->file->name);
+        return \Response::download($music->file->baseFile->getLocalCachePath(), $music->title . '.' . $music->file->ext);
     }
 
     public function getMusicBinToShowById($id)
@@ -116,7 +117,19 @@ class MusicController extends BaseController
         if (!$music || !$music->file || !$music->file->baseFile)
             throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
 
-        return \Response::download($music->file->baseFile->getLocalCachePath(), $music->file->name, [], 'inline');
+        return \Response::download($music->file->baseFile->getLocalCachePath(), $music->title . '.' . $music->file->ext, [], 'inline');
+    }
+
+    public function getMusicsByIds(Request $request)
+    {
+        $ids = $request->get('ids');
+
+        if (!is_array($ids))
+            throw new NotFoundException(NotFoundException::MUSIC_NOT_FOUND);
+
+        $musics = MusicModel::whereIn('id', $ids)->get();
+
+        return $this->buildResponse(trans('api.musics.get.success'), $musics);
     }
 
     public function getMusicById($id = 0)

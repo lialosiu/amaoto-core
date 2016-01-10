@@ -68,6 +68,7 @@ Route::group(['prefix' => 'api', 'middleware' => ['api']], function () {
         Route::get('download/{id}', ['uses' => 'Api\MusicController@getMusicBinToDownloadById', 'middleware' => []]);
         Route::post('edit/{id}', ['uses' => 'Api\MusicController@doEditMusicById', 'middleware' => ['auth.admin']]);
         Route::post('delete/{id}', ['uses' => 'Api\MusicController@doDeleteMusicById', 'middleware' => ['auth.admin']]);
+        Route::post('ids', ['uses' => 'Api\MusicController@getMusicsByIds', 'middleware' => []]);
         Route::get('{id}', ['uses' => 'Api\MusicController@getMusicById', 'middleware' => []]);
     });
 

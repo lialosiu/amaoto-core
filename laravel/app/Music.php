@@ -33,7 +33,7 @@ use Eloquent;
 class Music extends Eloquent
 {
     protected $table   = 'musics';
-    protected $appends = ['show_url', 'show_thumbnail_cover_url', 'bitrate_4_display'];
+    protected $appends = ['show_url', 'show_thumbnail_cover_url', 'download_url', 'bitrate_4_display'];
 
     public function file()
     {
@@ -60,6 +60,11 @@ class Music extends Eloquent
         if (!$this->coverImage)
             return '';
         return $this->coverImage->show_thumbnail_url;
+    }
+
+    public function getDownloadUrlAttribute()
+    {
+        return action('Api\MusicController@getMusicBinToDownloadById', ['id' => $this->id]);
     }
 
     public function getBitrate4DisplayAttribute()
