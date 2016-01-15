@@ -66,8 +66,8 @@ class FileManager
         $thumbnail          = Image::make($fileContent)->widen(300)->encode($fileModel->mime);
         $thumbnailFileModel = FileManager::saveFileByFileContent($thumbnail->encoded, $fileModel->name . '-thumbnail.' . $fileModel->ext, $thumbnail->mime(), $user);
 
-        if ($image->getWidth() > 1000) {
-            $highResolution          = Image::make($fileContent)->widen(1000)->encode($fileModel->mime);
+        if ($image->getWidth() > 1500) {
+            $highResolution          = Image::make($fileContent)->widen(1500)->encode($fileModel->mime);
             $highResolutionFileModel = FileManager::saveFileByFileContent($highResolution->encoded, $fileModel->name . '-high-resolution.' . $fileModel->ext, $highResolution->mime(), $user);
         } else {
             $highResolution          = Image::make($fileContent)->widen($image->getWidth())->encode($fileModel->mime);
