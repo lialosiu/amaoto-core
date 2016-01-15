@@ -3,6 +3,7 @@
 use App\Album;
 use App\Exceptions\AppException;
 use App\Http\Controllers\Api\Controller as BaseController;
+use App\Music;
 use App\Services\Tools;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Database\Query\Builder;
@@ -33,7 +34,16 @@ class AlbumController extends BaseController
         $album->save();
 
         foreach ($musics as $musicId) {
+            /** @var Music $music */
+            $music = Music::where('id', $musicId)->first();
+            if (!$music)
+                continue;
+
             $album->musics()->attach($musicId);
+            if (!$music->coverImage) {
+                $music->coverImage()->associate($album->coverImage);
+                $music->save();
+            }
         }
 
         return $this->buildResponse(trans('api.album.create.success'), Tools::toArray($album));
