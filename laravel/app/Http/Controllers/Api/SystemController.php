@@ -1,6 +1,8 @@
 <?php namespace App\Http\Controllers\Api;
 
+use App\Album;
 use App\Http\Controllers\Api\Controller as BaseController;
+use App\Music;
 use App\Services\System;
 use Illuminate\Http\Request;
 
@@ -12,6 +14,8 @@ class SystemController extends BaseController
             'site_name'    => System::getSiteName(),
             'powered_name' => System::getPoweredName(),
             'version'      => System::getVersion(),
+            'music_count'  => Music::count(),
+            'album_count'  => Album::count(),
         ]);
     }
 
