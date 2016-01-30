@@ -30,4 +30,4 @@
 
 ## 相关项目
 
-[lialosiu/amaoto-ngjs]() 对应的前端项目，使用 **AngularJS** 编写
+[lialosiu/amaoto-ngjs](https://github.com/lialosiu/amaoto-ngjs) 对应的前端项目，使用 **AngularJS** 编写
