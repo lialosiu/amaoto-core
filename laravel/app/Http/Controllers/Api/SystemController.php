@@ -4,7 +4,9 @@ use App\Album;
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Music;
 use App\Services\System;
+use App\Services\Tools;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class SystemController extends BaseController
 {
@@ -17,6 +19,22 @@ class SystemController extends BaseController
             'music_count'  => Music::count(),
             'album_count'  => Album::count(),
         ]);
+    }
+
+    public function getAmaotoFlow()
+    {
+        $flow = new Collection();
+        Music::orderByRaw('RAND()')->take(10)->get()->each(function ($item) use (&$flow) {
+            /** @var Music $item */
+            $flow->push(['type' => 'music', 'data' => $item->toArray()]);
+        });
+        Album::orderByRaw('RAND()')->take(10)->get()->each(function ($item) use (&$flow) {
+            /** @var Album $item */
+            $flow->push(['type' => 'album', 'data' => $item->toArray()]);
+        });
+        $result = $flow->shuffle();
+
+        return $this->buildResponse(trans('api.system.get-amaoto-flow.success'), Tools::toArray($result));
     }
 
     public function doSaveSetting(Request $request)

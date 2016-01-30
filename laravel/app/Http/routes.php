@@ -29,6 +29,7 @@ Route::any('test', function () {
 Route::group(['prefix' => 'api', 'middleware' => ['api']], function () {
     Route::group(['prefix' => 'system', 'middleware' => []], function () {
         Route::get('info', ['uses' => 'Api\SystemController@getInfo', 'middleware' => []]);
+        Route::get('amaoto-flow', ['uses' => 'Api\SystemController@getAmaotoFlow', 'middleware' => []]);
         Route::post('save-setting', ['uses' => 'Api\SystemController@doSaveSetting', 'middleware' => ['auth.admin']]);
     });
 
@@ -77,4 +78,5 @@ Route::group(['prefix' => 'api', 'middleware' => ['api']], function () {
         Route::post('create', ['uses' => 'Api\AlbumController@doCreateAlbum', 'middleware' => ['auth.admin']]);
         Route::post('edit/{id}', ['uses' => 'Api\AlbumController@doEditAlbum', 'middleware' => ['auth.admin']]);
     });
+
 });
